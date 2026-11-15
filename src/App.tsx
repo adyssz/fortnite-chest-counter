@@ -245,7 +245,7 @@ function App() {
                 size="lg"
                 className="h-11 font-heading text-base font-black uppercase sm:text-lg shadow-[inset_0_-3px_0_rgb(0_0_0/15%)] disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100 disabled:shadow-none"
                 disabled={busy}
-                onClick={countChests}
+               onClick={() => countChests()}
               >
                 Count chests in {formatCount(files.length, "replay")}
               </Button>
