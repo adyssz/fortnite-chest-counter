@@ -76,3 +76,10 @@ Some things used here are not covered by that license and stay under their own t
 ## Not affiliated with Epic Games
 
 Fortnite Chest Counter is a fan-made tool. It is not affiliated with, endorsed or sponsored by Epic Games. Fortnite is a trademark of Epic Games, Inc.
+
+## Automatic replay counting
+
+On desktop Microsoft Edge, open the app and choose **Choose replay folder** in the Automatic counting panel. Select your Fortnite `Saved/Demos` folder and grant read access. The app remembers the folder permission in this browser and checks it every five seconds while the tab is open and visible. New `.replay` files are counted automatically after their file size stops changing.
+
+The browser may ask you to reconnect the folder after a restart or when its permission expires. Keep the app tab open after matches; automatic counting does not run while the browser is closed. Replay files are read locally and are not uploaded. You can turn automatic counting off from the same panel.
+
