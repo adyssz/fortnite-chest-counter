@@ -3,6 +3,7 @@ import { Links } from "@/components/links";
 import { MatchesCard } from "@/components/matches-card";
 import { ProgressDialog } from "@/components/progress-dialog";
 import { ReplayPicker } from "@/components/replay-picker";
+import { AutoReplayWatcher } from "@/components/auto-replay-watcher";
 import { Hero } from "@/components/hero";
 import { StatTiles } from "@/components/stat-tiles";
 import { UpdateDialog } from "@/components/update-dialog";
@@ -87,7 +88,8 @@ function App() {
     cancelled.current = true;
     cancelParsing();
   };
-  const countChests = async () => {
+  const countChests = async (inputFiles: File[] = files) => {
+    const targetFiles = inputFiles;
     cancelled.current = false;
     setBusy(true);
     setProgress(0);
@@ -107,15 +109,15 @@ function App() {
     // Parse up to PARALLEL replays ahead, but handle the results in file order, so the bookkeeping below stays sequential.
     const parsing: Promise<Match | Error | null>[] = [];
     const start = (i: number) => {
-      if (i < files.length)
-        parsing[i] = skip(files[i])
+      if (i < targetFiles.length)
+        parsing[i] = skip(targetFiles[i])
           ? Promise.resolve(null)
-          : parseReplay(files[i]).catch((e) =>
+          : parseReplay(targetFiles[i]).catch((e) =>
               e instanceof Error ? e : new Error(String(e)),
             );
     };
     for (let i = 0; i < PARALLEL; i++) start(i);
-    for (const [i, file] of files.entries()) {
+    for (const [i, file] of targetFiles.entries()) {
       const knownSlow = !recount && timedOut.some(sameFile(file));
       const result = await parsing[i];
       if (cancelled.current) break;
@@ -151,7 +153,7 @@ function App() {
       setIssues([...notes]);
       setProgress(++handled);
     }
-    setFiles(files.slice(handled)); // after a cancel, the files not reached stay in the list
+    setFiles(targetFiles.slice(handled)); // after a cancel, the files not reached stay in the list
     setBusy(false);
     if (omitted > 0)
       toast.add({
@@ -223,6 +225,12 @@ function App() {
           />
           {/* drop zone with the one yellow button under it, like a search box. The row stretches both columns to one height, so the drop zone fills what the list and button leave */}
           <section className="mx-auto flex w-full max-w-lg flex-col gap-2.5">
+            <AutoReplayWatcher
+              onNewFiles={async (newFiles) => {
+                setFiles(newFiles);
+                await countChests(newFiles);
+              }}
+            />
             <ReplayPicker
               files={files}
               disabled={busy}
