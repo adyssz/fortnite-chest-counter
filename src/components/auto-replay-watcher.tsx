@@ -13,7 +13,10 @@ declare global {
   }
 }
 
-type DirectoryHandle = FileSystemDirectoryHandle;
+ type DirectoryHandle = FileSystemDirectoryHandle & {
+  queryPermission(options?: { mode?: "read" | "readwrite" }): Promise<PermissionState>;
+  requestPermission(options?: { mode?: "read" | "readwrite" }): Promise<PermissionState>;
+};
 
 function openDatabase(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
