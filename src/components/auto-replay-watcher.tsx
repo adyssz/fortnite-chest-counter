@@ -7,6 +7,12 @@ const STORE_NAME = "settings";
 const HANDLE_KEY = "replay-folder";
 const POLL_MS = 5_000;
 
+declare global {
+  interface Window {
+    showDirectoryPicker(options?: { mode?: "read" | "readwrite" }): Promise<FileSystemDirectoryHandle>;
+  }
+}
+
 type DirectoryHandle = FileSystemDirectoryHandle;
 
 function openDatabase(): Promise<IDBDatabase> {
